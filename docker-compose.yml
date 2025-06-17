@@ -1,0 +1,43 @@
+version: "3.8" # Specify Docker Compose file format version
+
+services:
+  # MySQL Database Service
+  mysql_db:
+    image: mysql:8.0 # Use MySQL 8.0 image
+    command: --default-authentication-plugin=mysql_native_password # For compatibility with older clients if needed
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306" # Map host port 3306 to container port 3306
+    volumes:
+      - mysql_data:/var/lib/mysql # Persist database data to a named volume
+    healthcheck: # Optional: Define a health check for the database
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  # Spring Boot Backend Service
+  backend:
+    build: ./trading-journal-backend # Build from the Dockerfile in the './backend' directory
+    ports:
+      - "8080:8080" # Map host port 8080 to container port 8080
+    environment:
+      # These environment variables will override properties in application.properties
+      # They are crucial for connecting to the MySQL container by its service name
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db:3306/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      APPLICATION_SECURITY_JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      APPLICATION_SECURITY_JWT_EXPIRATION: ${JWT_EXPIRATION_MS}
+    depends_on: # Ensure MySQL starts before the backend
+      mysql_db:
+        condition: service_healthy # Wait for mysql_db to be healthy before starting backend
+    # Optional: For hot-reloading during development inside Docker (more advanced)
+    # volumes:
+    #   - ./backend:/app # Mount the backend directory (requires devtools in pom.xml and spring-dev-tools jar copy in Dockerfile)
+    #   - ~/.m2:/root/.m2 # Cache Maven dependencies
+
+volumes:
+  mysql_data: # Define the named volume for MySQL data persistence
