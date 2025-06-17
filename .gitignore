@@ -1,0 +1,58 @@
+# =============== General Ignored Files ====================
+.DS_Store
+.env
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+target/
+build/
+*.log
+logs/
+*.swp
+.gradle/
+
+# =============== Java (Spring Boot) Backend Specific ================
+backend/target/
+backend/*.jar
+backend/*.war
+backend/src/main/resources/application-*.properties
+backend/src/main/resources/application-*.yml
+# Spring Boot specific IDE files
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/.metadata/
+
+# Database specific (if any local DB files are created outside target/)
+# For MySQL, usually no local files if you're using a server, but good to be aware.
+# If you use H2 embedded DB with file mode, add:
+# *.mv.db
+# *.trace.db
+
+# =============== React Frontend Specific (for when you add it) =============
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env.local
+frontend/.env.*.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.cache/
+frontend/coverage/
+
+# ============= IDE Specific (if not already covered) ============
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+# VS Code
+.vscode/
+
+# ============= Operating System specific ============
+.DS_Store
+Thumbs.db
