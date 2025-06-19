@@ -1,0 +1,319 @@
+.dashboard-container {
+  min-height: 100vh;
+  min-width: 100vw;
+  background-color: #1e2027;
+  color: #ffffff;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #262933;
+  border-bottom: 1px solid #363a47;
+}
+
+.time-filters {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.time-filters button {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #363a47;
+  color: #9095a0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.time-filters button.active {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.dashboard-content {
+  display: flex;
+  height: calc(100vh - 113px);
+}
+
+.sidebar {
+  width: 280px;
+  background-color: #262933;
+  padding: 1.5rem;
+  border-right: 1px solid #363a47;
+}
+
+.account-select {
+  width: 100%;
+  padding: 0.75rem;
+  background: #1e2027;
+  border: 1px solid #363a47;
+  color: white;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.balance-info {
+  padding: 1rem;
+  background: #1e2027;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #9095a0;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+.nav-item.active {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.action-buttons button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-new-trade {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-new-setup {
+  background-color: #4b5563;
+  color: white;
+}
+
+.btn-new-note {
+  background-color: #78350f;
+  color: white;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.equity-chart {
+  height: 200px;
+  background-color: #262933;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.trade-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.metric-item {
+  background-color: #262933;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.trades-list {
+  background-color: #262933;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.trades-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.trades-list th {
+  text-align: left;
+  padding: 1rem;
+  background-color: #1e2027;
+  color: #9095a0;
+  font-weight: 500;
+}
+
+.trades-list td {
+  padding: 1rem;
+  border-bottom: 1px solid #363a47;
+}
+
+.positive {
+  color: #22c55e;
+}
+.negative {
+  color: #ef4444;
+}
+
+tr.win {
+  background-color: rgba(34, 197, 94, 0.1);
+}
+tr.loss {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Add these to your existing Dashboard.css */
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #ffffff;
+  background-color: #1e2027;
+  font-size: 1.2rem;
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #ef4444;
+  background-color: #1e2027;
+  font-size: 1.2rem;
+  padding: 1rem;
+}
+
+.account-select {
+  width: 100%;
+  padding: 12px;
+  background: #2a2d35;
+  border: 1px solid #3a3d45;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+}
+
+.account-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.account-select option {
+  background: #2a2d35;
+  color: white;
+  padding: 8px;
+}
+
+/* Add these styles to your existing CSS */
+
+.user-menu {
+  position: relative;
+}
+
+.user-menu-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.user-menu-trigger:hover {
+  background-color: #2a2d35;
+}
+
+.user-menu-trigger img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.user-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: 240px;
+  background-color: #262933;
+  border: 1px solid #363a47;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.user-email {
+  font-size: 0.875rem;
+  color: #9095a0;
+}
+
+.menu-divider {
+  height: 1px;
+  background-color: #363a47;
+  margin: 0.5rem 0;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.logout-button:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.icon-logout {
+  width: 16px;
+  height: 16px;
+}
