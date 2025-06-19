@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionRequestDTO {
+    private Long id;
+
     @NotNull(message = "Account ID is required")
     private Long accountId;
 

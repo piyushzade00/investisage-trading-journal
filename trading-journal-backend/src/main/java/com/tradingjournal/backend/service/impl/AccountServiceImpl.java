@@ -3,8 +3,10 @@ package com.tradingjournal.backend.service.impl;
 import com.tradingjournal.backend.dto.account.AccountRequestDTO;
 import com.tradingjournal.backend.dto.account.AccountResponseDTO;
 import com.tradingjournal.backend.entity.AccountEntity;
+import com.tradingjournal.backend.entity.TransactionEntity;
 import com.tradingjournal.backend.entity.UserEntity;
 import com.tradingjournal.backend.mapper.AccountMapper;
+import com.tradingjournal.backend.mapper.TransactionMapper;
 import com.tradingjournal.backend.repository.AccountRepository;
 import com.tradingjournal.backend.repository.UserRepository;
 import com.tradingjournal.backend.service.AccountService;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,14 +25,17 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final AccountMapper accountMapper;
+    private final TransactionMapper transactionMapper;
 
     @Autowired
     public AccountServiceImpl(AccountRepository accountRepository,
                               UserRepository userRepository,
-                              AccountMapper accountMapper){
+                              AccountMapper accountMapper,
+                              TransactionMapper transactionMapper){
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
         this.accountMapper = accountMapper;
+        this.transactionMapper = transactionMapper;
     }
 
     // Create a new account for a user
@@ -59,9 +65,16 @@ public class AccountServiceImpl implements AccountService {
             }
         }
 
-        AccountEntity account = accountMapper.toAccountEntity(user,request);
-
+        AccountEntity account = accountMapper.toAccountEntity(user, request);
+        account.setTransactions(null);
         AccountEntity savedAccount = accountRepository.save(account);
+
+        if (request.getTransactions() != null && !request.getTransactions().isEmpty()) {
+            List<TransactionEntity> transactions = transactionMapper.toTransactionEntity(savedAccount, request.getTransactions());
+            validateNoOverdraw(transactions);
+            savedAccount.setTransactions(transactions);
+            accountRepository.save(savedAccount);
+        }
 
         return accountMapper.mapToDto(savedAccount);
     }
@@ -80,6 +93,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponseDTO getAccountByIdForUser(Long accountId, Long userId) {
         AccountEntity account = accountRepository.findByIdAndUserId(accountId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Account not found or does not belong to user with ID: " + accountId));
+
         return accountMapper.mapToDto(account);
     }
 
@@ -110,6 +124,21 @@ public class AccountServiceImpl implements AccountService {
             existingAccount.setPrimary(false);
         }
 
+        // Remove all existing transactions and set new ones
+        existingAccount.getTransactions().clear();
+        if (request.getTransactions() != null && !request.getTransactions().isEmpty()) {
+            List<TransactionEntity> newTransactions = request.getTransactions().stream()
+                    .map(dto -> TransactionEntity.builder()
+                            .account(existingAccount)
+                            .type(dto.getType())
+                            .amount(dto.getAmount())
+                            .transactionDateTime(dto.getTransactionDateTime())
+                            .notes(dto.getNotes())
+                            .build())
+                    .collect(Collectors.toList());
+            existingAccount.getTransactions().addAll(newTransactions);
+        }
+
         AccountEntity updatedAccount = accountRepository.save(existingAccount);
         return accountMapper.mapToDto(updatedAccount);
     }
@@ -131,5 +160,19 @@ public class AccountServiceImpl implements AccountService {
         }
 
        accountRepository.delete(account);
+    }
+
+    private void validateNoOverdraw(List<TransactionEntity> transactions) {
+        BigDecimal balance = BigDecimal.ZERO;
+        for (TransactionEntity tx : transactions) {
+            if (tx.getType() == com.tradingjournal.backend.enums.TransactionType.DEPOSIT) {
+                balance = balance.add(tx.getAmount());
+            } else if (tx.getType() == com.tradingjournal.backend.enums.TransactionType.WITHDRAWAL) {
+                if (balance.compareTo(tx.getAmount()) < 0) {
+                    throw new IllegalArgumentException("Withdrawal of " + tx.getAmount() + " exceeds available balance: " + balance);
+                }
+                balance = balance.subtract(tx.getAmount());
+            }
+        }
     }
 }

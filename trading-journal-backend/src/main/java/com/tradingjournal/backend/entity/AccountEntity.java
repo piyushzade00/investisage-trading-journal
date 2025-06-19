@@ -1,5 +1,6 @@
 package com.tradingjournal.backend.entity;
 
+import com.tradingjournal.backend.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,10 +46,11 @@ public class AccountEntity {
             return BigDecimal.ZERO;
         }
 
-        // Sum the amounts of all transactions
         return transactions.stream()
-                .map(TransactionEntity::getAmount)
-                .filter(amount -> amount != null) // Ensure amount is not null
-                .reduce(BigDecimal.ZERO, BigDecimal::add); // Sum them up
+                .filter(tx -> tx.getAmount() != null && tx.getType() != null)
+                .map(tx -> tx.getType() == TransactionType.DEPOSIT
+                        ? tx.getAmount()
+                        : tx.getAmount().negate())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

@@ -12,6 +12,7 @@ public interface TransactionRepository  extends JpaRepository<TransactionEntity,
     // Find all transactions for a specific account
     List<TransactionEntity> findByAccountId(Long accountId);
 
-    // Find a specific transaction by ID and ensure it belongs to a specific account AND user
+    List<TransactionEntity> findByAccount_IdAndAccount_User_Id(Long accountId, Long userId);
+
     Optional<TransactionEntity> findByIdAndAccount_IdAndAccount_User_Id(Long transactionId, Long accountId, Long userId);
 }
