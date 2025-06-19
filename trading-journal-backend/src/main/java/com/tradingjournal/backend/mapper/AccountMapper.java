@@ -14,6 +14,7 @@ public class AccountMapper {
                 .name(request.getName())
                 .broker(request.getBroker())
                 .user(user)
+                .isPrimary(request.isPrimary())
                 .build();
 
         return account;
@@ -25,6 +26,8 @@ public class AccountMapper {
                 .name(account.getName())
                 .broker(account.getBroker())
                 .userId(account.getUser().getId())
+                .isPrimary(account.isPrimary())
+                .accountBalance(account.getAccountBalance())
                 .build();
     }
 }

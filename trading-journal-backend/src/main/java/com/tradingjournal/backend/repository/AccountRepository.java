@@ -14,4 +14,10 @@ public interface AccountRepository extends JpaRepository<AccountEntity, Long> {
 
     // Find a specific account by ID and ensure it belongs to a specific user
     Optional<AccountEntity> findByIdAndUserId(Long id, Long userId);
+
+    Optional<AccountEntity> findByUserIdAndIsPrimary(Long userId, boolean isPrimary);
+    long countByUserId(Long userId);
+    Optional<AccountEntity> findTopByUserIdAndIdNot(Long userId, Long excludedAccountId);
+
+    Optional<AccountEntity> findByNameAndUserId(String name, Long userId);
 }
